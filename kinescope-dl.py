@@ -86,7 +86,3 @@ print('==============================')
 Popen(f"ffmpeg -i video.mp4 -i audio.mp4 -c copy {kinescope_video_id}.mp4 -y -loglevel error").communicate()
 remove(TMP_VIDEO_PATH)
 remove(TMP_AUDIO_PATH)
-
-# https://kinescope.io/204341129
-# https://nd.umschool.net/
-# 1
