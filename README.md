@@ -6,7 +6,7 @@ Video downloader for [kinescope.io](https://kinescope.io)
 ```commandline
 git clone https://github.com/anijackich/kinescope-dl.git
 ```
-[FFmpeg](https://ffmpeg.org/download.html) and [mp4decrypt](https://www.bento4.com/downloads/) should be in the same directory as the project.
+[FFmpeg](https://ffmpeg.org/download.html) and [mp4decrypt](https://www.bento4.com/downloads/) binaries should be in the same directory as the project.
 
 <details>
 <summary>Use a virtual environment (optional)</summary>
@@ -41,10 +41,16 @@ python kinescope-dl.py
 3) 720p
 4) 1080p
 > QUALITY: 4
+```
+KINESCOPE URL — url of the video on Kinescope (e.g. ```https://kinescope.io/123456789```)
 
-= DOWNLOADING ================
+VIDEO ID — id of the video, REFERER URL will not be asked if you specify it (e.g. ```1a2b3c4d-5e6f-7g8h-9i10-11j12k13l14m```)
+
+REFERER URL — url of the site where the video is embedded (e.g. ```https://example.com```)
+```
+= DOWNLOADING =================
 Video: 100%|██████████| [10/10]
 Audio: 100%|██████████| [4/4]
-==============================
+===============================
 ```
 Videos will be saved in this directory. 

@@ -58,7 +58,7 @@ key = b64decode(requests.post(
 
 session = requests.Session()
 
-print('\n= DOWNLOADING ================')
+print('\n= DOWNLOADING =================')
 for track in [
     ['Video', TMP_VIDEO_PATH + ('.enc' if key else ''), segments_urls['video/mp4']],
     ['Audio', TMP_AUDIO_PATH + ('.enc' if key else ''), segments_urls['audio/mp4']]
@@ -67,7 +67,7 @@ for track in [
         segments = [seg for i, seg in enumerate(track[2]) if i == track[2].index(seg)]
         with tqdm(desc=track[0],
                   total=len(segments),
-                  bar_format='{desc}: {percentage:3.0f}%|{bar}| [{n_fmt}/{total_fmt}]') as progress_bar:
+                  bar_format='{desc}: {percentage:3.0f}%|{bar:10}| [{n_fmt}/{total_fmt}]') as progress_bar:
             for segment_url in segments:
                 while True:
                     try:
@@ -81,7 +81,7 @@ for track in [
         Popen(f"mp4decrypt --key 1:{key} \"{track[1]}\" \"{track[1][:-4]}\"").communicate()
         remove(track[1])
 
-print('==============================')
+print('===============================')
 
 Popen(f"ffmpeg -i video.mp4 -i audio.mp4 -c copy {kinescope_video_id}.mp4 -y -loglevel error").communicate()
 remove(TMP_VIDEO_PATH)
