@@ -6,7 +6,7 @@ Video downloader for [kinescope.io](https://kinescope.io)
 ```commandline
 git clone https://github.com/anijackich/kinescope-dl.git
 ```
-[FFmpeg](https://ffmpeg.org/download.html) and [mp4decrypt](https://www.bento4.com/downloads/) binaries should be in the same directory as the project.
+[FFmpeg](https://ffmpeg.org/download.html) and [mp4decrypt](https://www.bento4.com/downloads/) binaries should be in the same directory as the project or paths to them should be passed when running the command.
 
 <details>
 <summary>Use a virtual environment (optional)</summary>
@@ -31,26 +31,23 @@ pip install -r requirements.txt
 
 ## Usage
 ```commandline
-python kinescope-dl.py
+python kinescope-dl.py [OPTIONS] SOURCE OUTPUT
 ```
+### Options
 ```
-> KINESCOPE URL or VIDEO ID: https://kinescope.io/123456789
-> REFERER URL (optional): https://example.com
-1) 360p
-2) 480p
-3) 720p
-4) 1080p
-> QUALITY: 4
+--help                 Show this message and exit
+-r, --referer TEXT     Referer url of the site where the video is embedded
+--best-quality         Automatically select the best possible quality
+--ffmpeg-bin PATH      Path to FFmpeg binary
+--mp4decrypt-bin PATH  Path to mp4decrypt binary
+--temp PATH            Path to directory for temporary files
 ```
-KINESCOPE URL — url of the video on Kinescope (e.g. ```https://kinescope.io/123456789```)
+Video URL — url of the video on Kinescope (e.g. ```https://kinescope.io/123456789```)
 
-VIDEO ID — id of the video, REFERER URL will not be asked if you specify it (e.g. ```1a2b3c4d-5e6f-7g8h-9i10-11j12k13l14m```)
+Video Id — id of the video; when specifying it, referer url is not needed (e.g. ```1a2b3c4d-5e6f-7g8h-9i10-11j12k13l14m```)
 
-REFERER URL — url of the site where the video is embedded (e.g. ```https://example.com```)
+Referer URL — url of the site where the video is embedded (e.g. ```https://example.com```)
+### Example
+```commandline
+python kinescope-dl.py -r https://example.com --best-quality https://kinescope.io/123456789 ./videos/video.mp4
 ```
-= DOWNLOADING =================
-Video: 100%|██████████| [10/10]
-Audio: 100%|██████████| [4/4]
-===============================
-```
-Videos will be saved in this directory. 
