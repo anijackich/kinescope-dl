@@ -1,88 +1,69 @@
-import requests
-from os import remove
-from io import BytesIO
-from subprocess import Popen
-from shutil import copyfileobj
-from base64 import b64encode, b64decode
+import click
+from kinescope import KinescopeVideo, KinescopeDownloader
 
-from tqdm import tqdm
-from mpegdash.parser import MPEGDASHParser
 
-TMP_VIDEO_PATH = 'video.mp4'
-TMP_AUDIO_PATH = 'audio.mp4'
+@click.command()
+@click.option(
+    '--referer', '-r',
+    default='', required=False, help='Referer url of the site where the video is embedded'
+)
+@click.option(
+    '--best-quality',
+    default=False, required=False, help='Automatically select the best possible quality', is_flag=True
+)
+@click.option(
+    '--ffmpeg-bin',
+    default=None, required=False, help='Path to FFmpeg binary', type=click.Path()
+)
+@click.option(
+    '--mp4decrypt-bin',
+    default=None, required=False, help='Path to mp4decrypt binary', type=click.Path()
+)
+@click.option(
+    '--temp',
+    default='./temp', required=False, help='Path to directory for temporary files', type=click.Path()
+)
+@click.argument('source', type=click.STRING)
+@click.argument('output', default=None, required=False, type=click.Path())
+def main(referer,
+         best_quality,
+         ffmpeg_bin, mp4decrypt_bin,
+         temp, source, output):
+    """
+    kinescope-dl: Video downloader for Kinescope
+    https://github.com/anijackich/kinescope-dl
 
-KINESCOPE_BASE_URL = 'https://kinescope.io'
-KINESCOPE_MASTER_URL = KINESCOPE_BASE_URL + '/{video_id}/master.mpd'
-KINESCOPE_CLEARKEY_LICENSE_URL = 'https://license.kinescope.io/v1/vod/{video_id}/acquire/clearkey?token='
+    \b
+    <SOURCE> is url or id of video
+    <OUTPUT> is output mp4 file (optional)
+    """
 
-kinescope_id = input('> KINESCOPE URL or VIDEO ID: ').replace(KINESCOPE_BASE_URL, '').replace('/', '')
+    is_video_id = 'https' not in source
 
-kinescope_video_id = requests.get(
-    url=KINESCOPE_BASE_URL + '/' + kinescope_id,
-    headers={'Referer': input('> REFERER URL (optional): ')}
-).text.split('id: "')[1].split('"')[0] if kinescope_id.isdigit() else kinescope_id
+    kinescope_video: KinescopeVideo = KinescopeVideo(
+        url=source if not is_video_id else None,
+        video_id=source if is_video_id else None,
+        referer_url=referer
+    )
 
-master = MPEGDASHParser.parse(requests.get(
-    url=KINESCOPE_MASTER_URL.format(video_id=kinescope_video_id),
-    headers={'Referer': KINESCOPE_BASE_URL}
-).text)
+    downloader: KinescopeDownloader = KinescopeDownloader(kinescope_video, temp, ffmpeg_bin, mp4decrypt_bin)
 
-segments_urls = {
-    adaptation_set.mime_type: [
-        segment_url.media for segment_url in sorted(
-            adaptation_set.representations,
-            key=lambda x: x.height
-        )[
-            int(input('\n'.join([
-                f'{i + 1}) {r.height}p' for i, r in enumerate(
-                    sorted(adaptation_set.representations, key=lambda x: x.height)
-                )
-            ]) + '\n> QUALITY: ')) - 1
-            if adaptation_set.representations[0].height else 0
-        ].segment_lists[0].segment_urls
-    ] for adaptation_set in master.periods[0].adaptation_sets
-}
+    video_resolutions = downloader.get_resolutions()
+    chosen_resolution = video_resolutions[-1] if best_quality else video_resolutions[int(input(
+        '\n'.join([f'{i + 1}) {r[1]}p' for i, r in enumerate(video_resolutions)]) +
+        '\n> QUALITY: '
+    )) - 1]
 
-key = b64decode(requests.post(
-    url=KINESCOPE_CLEARKEY_LICENSE_URL.format(video_id=kinescope_video_id),
-    headers={'origin': KINESCOPE_BASE_URL},
-    json={
-        'kids': [
-            b64encode(bytes.fromhex(
-                master.periods[0].adaptation_sets[0].content_protections[0].cenc_default_kid.replace('-', '')
-            )).decode().replace('=', '')
-        ],
-        'type': 'temporary'
-    }
-).json()['keys'][0]['k'] + '==').hex() if master.periods[0].adaptation_sets[0].content_protections else None
+    print('\n= DOWNLOADING =================')
+    downloader.download(
+        output if output else f'videos/{kinescope_video.video_id.replace("-", "")}.mp4',
+        chosen_resolution
+    )
+    print('===============================')
 
-session = requests.Session()
 
-print('\n= DOWNLOADING =================')
-for track in [
-    ['Video', TMP_VIDEO_PATH + ('.enc' if key else ''), segments_urls['video/mp4']],
-    ['Audio', TMP_AUDIO_PATH + ('.enc' if key else ''), segments_urls['audio/mp4']]
-]:
-    with open(track[1], 'wb') as f:
-        segments = [seg for i, seg in enumerate(track[2]) if i == track[2].index(seg)]
-        with tqdm(desc=track[0],
-                  total=len(segments),
-                  bar_format='{desc}: {percentage:3.0f}%|{bar:10}| [{n_fmt}/{total_fmt}]') as progress_bar:
-            for segment_url in segments:
-                while True:
-                    try:
-                        copyfileobj(BytesIO(session.get(segment_url, stream=True).content), f)
-                        break
-                    except requests.exceptions.ChunkedEncodingError:
-                        pass
-                progress_bar.update()
-
-    if key:
-        Popen(f"mp4decrypt --key 1:{key} \"{track[1]}\" \"{track[1][:-4]}\"").communicate()
-        remove(track[1])
-
-print('===============================')
-
-Popen(f"ffmpeg -i video.mp4 -i audio.mp4 -c copy {kinescope_video_id}.mp4 -y -loglevel error").communicate()
-remove(TMP_VIDEO_PATH)
-remove(TMP_AUDIO_PATH)
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('[*] Interrupted')

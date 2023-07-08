@@ -1,5 +1,7 @@
-/venv
-/.idea
-/__pycache__
+venv
+.idea
+**/__pycache__/
+videos
+temp
 ffmpeg.exe
 mp4decrypt.exe
