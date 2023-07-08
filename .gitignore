@@ -1,5 +1,8 @@
 venv
 .idea
+build
+dist
+kinescope-dl.spec
 **/__pycache__/
 videos
 temp
