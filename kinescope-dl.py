@@ -38,6 +38,12 @@ def main(referer,
     <OUTPUT> is output mp4 file (optional)
     """
 
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+          '~                KINESCOPE-DL                ~\n'
+          '~         Kinescope videos downloader        ~\n'
+          '~ https://github.com/anijackich/kinescope-dl ~\n'
+          '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
+
     is_video_id = 'https' not in source
 
     kinescope_video: KinescopeVideo = KinescopeVideo(
