@@ -1,12 +1,17 @@
 # kinescope-dl
 Video downloader for [kinescope.io](https://kinescope.io)
 
+## Requirements
+[FFmpeg](https://ffmpeg.org/download.html) and [mp4decrypt](https://www.bento4.com/downloads/) binaries should be in the same directory as the script or paths to them should be passed when running the command.
+
 ## Installation
+Download and unpack the [latest release](https://github.com/anijackich/kinescope-dl/releases/latest).
+
+### From sources
 [Download](https://github.com/anijackich/kinescope-dl/archive/refs/heads/master.zip) and unpack the script or clone it:
 ```commandline
 git clone https://github.com/anijackich/kinescope-dl.git
 ```
-[FFmpeg](https://ffmpeg.org/download.html) and [mp4decrypt](https://www.bento4.com/downloads/) binaries should be in the same directory as the project or paths to them should be passed when running the command.
 
 <details>
 <summary>Use a virtual environment (optional)</summary>
@@ -30,6 +35,10 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+```commandline
+kinescope-dl [OPTIONS] SOURCE OUTPUT
+```
+or
 ```commandline
 python kinescope-dl.py [OPTIONS] SOURCE OUTPUT
 ```
