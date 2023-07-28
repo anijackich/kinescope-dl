@@ -12,7 +12,7 @@ from tqdm import tqdm
 from mpegdash.parser import MPEGDASHParser, MPEGDASH
 
 from kinescope.kinescope import KinescopeVideo
-from kinescope._const import KINESCOPE_BASE_URL
+from kinescope.const import KINESCOPE_BASE_URL
 from kinescope.exceptions import *
 
 

@@ -1,7 +1,7 @@
 from requests import Session
 from typing import Optional
 
-from kinescope._const import *
+from kinescope.const import *
 from kinescope.exceptions import *
 
 
