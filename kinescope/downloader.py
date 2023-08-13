@@ -44,10 +44,10 @@ class VideoDownloader:
                       target_filepath: Union[str, PathLike]):
         try:
             Popen((f"{self.ffmpeg_path if self.ffmpeg_path else 'ffmpeg'}",
-                  "-i", f"{source_video_filepath}",
-                  "-i", f"{source_audio_filepath}",
-                  "-c", "copy", f"{target_filepath}",
-                  "-y", "-loglevel", "error")).communicate()
+                   "-i", f"{source_video_filepath}",
+                   "-i", f"{source_audio_filepath}",
+                   "-c", "copy", f"{target_filepath}",
+                   "-y", "-loglevel", "error")).communicate()
         except FileNotFoundError:
             raise FFmpegNotFoundError('FFmpeg binary was not found at the specified path')
 
@@ -56,9 +56,9 @@ class VideoDownloader:
                        key: str):
         try:
             Popen((f"{self.mp4decrypt_path if self.mp4decrypt_path else 'mp4decrypt'}",
-                  "--key", f"1:{key}",
-                  f"\"{source_filepath}\"",
-                  f"\"{target_filepath}\"")).communicate()
+                   "--key", f"1:{key}",
+                   f"\"{source_filepath}\"",
+                   f"\"{target_filepath}\"")).communicate()
         except FileNotFoundError:
             raise FFmpegNotFoundError('mp4decrypt binary was not found at the specified path')
 
