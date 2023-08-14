@@ -39,9 +39,9 @@ class VideoDownloader:
         for filename in self.temp_path.glob('*.mp4.enc'):
             remove(filename)
 
-    def _merge_tracks(self, source_video_filepath: Union[str, PathLike],
-                      source_audio_filepath: Union[str, PathLike],
-                      target_filepath: Union[str, PathLike]):
+    def _merge_tracks(self, source_video_filepath: str | PathLike,
+                      source_audio_filepath: str | PathLike,
+                      target_filepath: str | PathLike):
         try:
             Popen((f"{self.ffmpeg_path if self.ffmpeg_path else 'ffmpeg'}",
                    "-i", f"{source_video_filepath}",
@@ -51,8 +51,8 @@ class VideoDownloader:
         except FileNotFoundError:
             raise FFmpegNotFoundError('FFmpeg binary was not found at the specified path')
 
-    def _decrypt_video(self, source_filepath: Union[str, PathLike],
-                       target_filepath: Union[str, PathLike],
+    def _decrypt_video(self, source_filepath: str | PathLike,
+                       target_filepath: str | PathLike,
                        key: str):
         try:
             Popen((f"{self.mp4decrypt_path if self.mp4decrypt_path else 'mp4decrypt'}",
@@ -99,7 +99,7 @@ class VideoDownloader:
 
     def _fetch_segments(self,
                         segments_urls: list[str],
-                        filepath: Union[str, PathLike],
+                        filepath: str | PathLike,
                         progress_bar_label: str = ''):
         segments_urls = [seg for i, seg in enumerate(segments_urls) if i == segments_urls.index(seg)]
         with open(filepath, 'wb') as f:
