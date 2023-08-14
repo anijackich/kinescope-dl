@@ -3,8 +3,8 @@ from typing import Union
 from pathlib import Path
 from requests import Session
 from subprocess import Popen
-from shutil import copyfileobj
 from os import PathLike, remove
+from shutil import copyfileobj, rmtree
 from base64 import b64decode, b64encode
 from requests.exceptions import ChunkedEncodingError
 
@@ -34,10 +34,7 @@ class VideoDownloader:
         self.mpd_master: MPEGDASH = self._fetch_mpd_master()
 
     def __del__(self):
-        for filename in self.temp_path.glob('*.mp4'):
-            remove(filename)
-        for filename in self.temp_path.glob('*.mp4.enc'):
-            remove(filename)
+        rmtree(self.temp_path)
 
     def _merge_tracks(self, source_video_filepath: str | PathLike,
                       source_audio_filepath: str | PathLike,
@@ -57,8 +54,8 @@ class VideoDownloader:
         try:
             Popen((f"{self.mp4decrypt_path if self.mp4decrypt_path else 'mp4decrypt'}",
                    "--key", f"1:{key}",
-                   f"\"{source_filepath}\"",
-                   f"\"{target_filepath}\"")).communicate()
+                   source_filepath,
+                   target_filepath)).communicate()
         except FileNotFoundError:
             raise FFmpegNotFoundError('mp4decrypt binary was not found at the specified path')
 
@@ -142,25 +139,25 @@ class VideoDownloader:
 
         self._fetch_segments(
             self._get_segments_urls(resolution)['video/mp4'],
-            self.temp_path / f'{self.kinescope_video.video_id.replace("-", "")}_video.mp4{".enc" if key else ""}',
+            self.temp_path / f'{self.kinescope_video.video_id}_video.mp4{".enc" if key else ""}',
             'Video'
         )
         self._fetch_segments(
             self._get_segments_urls(resolution)['audio/mp4'],
-            self.temp_path / f'{self.kinescope_video.video_id.replace("-", "")}_audio.mp4{".enc" if key else ""}',
+            self.temp_path / f'{self.kinescope_video.video_id}_audio.mp4{".enc" if key else ""}',
             'Audio'
         )
 
         if key:
             print('[*] Decrypting...', end=' ')
             self._decrypt_video(
-                self.temp_path / f'{self.kinescope_video.video_id.replace("-", "")}_video.mp4.enc',
-                self.temp_path / f'{self.kinescope_video.video_id.replace("-", "")}_video.mp4',
+                self.temp_path / f'{self.kinescope_video.video_id}_video.mp4.enc',
+                self.temp_path / f'{self.kinescope_video.video_id}_video.mp4',
                 key
             )
             self._decrypt_video(
-                self.temp_path / f'{self.kinescope_video.video_id.replace("-", "")}_audio.mp4.enc',
-                self.temp_path / f'{self.kinescope_video.video_id.replace("-", "")}_audio.mp4',
+                self.temp_path / f'{self.kinescope_video.video_id}_audio.mp4.enc',
+                self.temp_path / f'{self.kinescope_video.video_id}_audio.mp4',
                 key
             )
             print('Done')
@@ -170,8 +167,8 @@ class VideoDownloader:
 
         print('[*] Merging tracks...', end=' ')
         self._merge_tracks(
-            self.temp_path / f'{self.kinescope_video.video_id.replace("-", "")}_video.mp4',
-            self.temp_path / f'{self.kinescope_video.video_id.replace("-", "")}_audio.mp4',
+            self.temp_path / f'{self.kinescope_video.video_id}_video.mp4',
+            self.temp_path / f'{self.kinescope_video.video_id}_audio.mp4',
             filepath
         )
         print('Done')

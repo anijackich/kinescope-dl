@@ -37,33 +37,32 @@ def main(referer,
          best_quality,
          temp, input_url, output_file):
     """
-    kinescope-dl: Video downloader for Kinescope
-    https://github.com/anijackich/kinescope-dl
+    Kinescope-dl: Video downloader for Kinescope
 
     \b
     <INPUT_URL> is url of the Kinescope video
     <OUTPUT_FILE> is path to the output mp4 file
     """
 
-    is_video_id = 'https' not in input_url
-
     kinescope_video: KinescopeVideo = KinescopeVideo(
-        url=input_url if not is_video_id else None,
-        video_id=input_url if is_video_id else None,
+        url=input_url,
         referer_url=referer
     )
 
     downloader: KinescopeDownloader = KinescopeDownloader(kinescope_video, temp)
 
+    print('= OPTIONS ============================')
     video_resolutions = downloader.get_resolutions()
     chosen_resolution = video_resolutions[-1] if best_quality else video_resolutions[int(input(
-        '\n'.join([f'{i + 1}) {r[1]}p' for i, r in enumerate(video_resolutions)]) +
-        '\n> QUALITY: '
+        '   '.join([f'{i + 1}) {r[1]}p' for i, r in enumerate(video_resolutions)]) +
+        '\n> Quality: '
     )) - 1]
+    print(f'[*] {chosen_resolution[1]}p is selected')
+    print('======================================')
 
     print('\n= DOWNLOADING =================')
     downloader.download(
-        output_file if output_file else f'videos/{kinescope_video.video_id.replace("-", "")}.mp4',
+        output_file if output_file else f'{kinescope_video.video_id}.mp4',
         chosen_resolution
     )
     print('===============================')
