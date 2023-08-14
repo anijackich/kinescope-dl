@@ -1,11 +1,27 @@
 import click
+from urllib.parse import urlparse
+
 from kinescope import KinescopeVideo, KinescopeDownloader
+
+
+class URLType(click.ParamType):
+    name = 'url'
+
+    def convert(self, value, param, ctx):
+        try:
+            parsed_url = urlparse(value)
+            if parsed_url.scheme and parsed_url.netloc:
+                return value
+            else:
+                self.fail(f'Expected valid url. Got {value}', param, ctx)
+        except Exception as E:
+            self.fail(f'Expected valid url. Got {value}: {E}', param, ctx)
 
 
 @click.command()
 @click.option(
     '--referer', '-r',
-    required=False, help='Referer url of the site where the video is embedded'
+    required=False, help='Referer url of the site where the video is embedded', type=URLType()
 )
 @click.option(
     '--best-quality',
@@ -15,7 +31,7 @@ from kinescope import KinescopeVideo, KinescopeDownloader
     '--temp',
     default='./temp', required=False, help='Path to directory for temporary files', type=click.Path()
 )
-@click.argument('input_url', type=click.STRING)
+@click.argument('input_url', type=URLType())
 @click.argument('output_file', type=click.Path())
 def main(referer,
          best_quality,
