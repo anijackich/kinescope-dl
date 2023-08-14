@@ -26,14 +26,8 @@ def main(referer,
 
     \b
     <INPUT_URL> is url of the Kinescope video
-    <OUTPUT> is path to the output mp4 file
+    <OUTPUT_FILE> is path to the output mp4 file
     """
-
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-          '~                KINESCOPE-DL                ~\n'
-          '~         Kinescope videos downloader        ~\n'
-          '~ https://github.com/anijackich/kinescope-dl ~\n'
-          '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
 
     is_video_id = 'https' not in input_url
 
