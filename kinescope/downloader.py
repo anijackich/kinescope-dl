@@ -19,8 +19,8 @@ from kinescope.exceptions import *
 class VideoDownloader:
     def __init__(self, kinescope_video: KinescopeVideo,
                  temp_dir: Union[str, PathLike] = './temp',
-                 ffmpeg_path: Union[str, PathLike] = './ffmpeg.exe',
-                 mp4decrypt_path: Union[str, PathLike] = './mp4decrypt.exe'):
+                 ffmpeg_path: Union[str, PathLike] = None,
+                 mp4decrypt_path: Union[str, PathLike] = None):
         self.kinescope_video: KinescopeVideo = kinescope_video
 
         self.temp_path: Path = Path(temp_dir)
