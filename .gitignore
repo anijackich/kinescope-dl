@@ -1,10 +1,8 @@
-venv
 .idea
+venv
 build
 dist
-kinescope-dl.spec
 **/__pycache__/
-videos
 temp
 ffmpeg.exe
 mp4decrypt.exe
