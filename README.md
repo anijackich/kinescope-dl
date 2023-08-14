@@ -9,6 +9,12 @@
 
 Kinescope-dl is a fast video downloader for [Kinescope](https://kinescope.io) player with encrypted videos support.
 
+---
+Easily download videos with one command
+```shell
+kinescope-dl https://kinescope.io/123456789 output.mp4
+```
+---
 Join our [community chat](https://t.me/KinescopeDL) in Telegram to discuss issues or if you need help.
 
 ## ⬇️ Installation
@@ -17,7 +23,7 @@ Download and unpack the [latest release](https://github.com/anijackich/kinescope
 Windows users can place .exe file in any location on their [PATH](https://en.wikipedia.org/wiki/PATH_%28variable%29) or just call script as `./path/to/executable/kinescope-dl.exe`
 
 For UNIX users (Linux, macOS, etc.):
-```commandline
+```shell
 sudo mv ./path/to/executable/kinescope-dl /usr/local/bin/kinescope-dl
 sudo chmod a+rx /usr/local/bin/kinescope-dl
 ```
@@ -30,15 +36,13 @@ INPUT_URL — url of the video on Kinescope
 OUTPUT_FILE — path to the output mp4 file
 
 ### Options
-```
--r, --referer URL      Referer url of the site where the video is embedded
---best-quality         Automatically select the best possible quality
---temp PATH            Path to directory for temporary files
---help                 Show this message and exit
-```
+      -r, --referer URL      Referer url of the site where the video is embedded
+      --best-quality         Automatically select the best possible quality
+      --temp PATH            Path to directory for temporary files
+      --help                 Show this message and exit
 
 ### Example
-```commandline
+```shell
 kinescope-dl -r https://example.com --best-quality https://kinescope.io/123456789 ./my_videos/video.mp4
 ```
 
@@ -49,38 +53,38 @@ kinescope-dl -r https://example.com --best-quality https://kinescope.io/12345678
 ### Building
 1. Download and install the latest version of [Python 3](https://www.python.org/downloads/)
 2. Ensure that you have pip installed:
-    ```commandline
+    ```shell
     python -m ensurepip --upgrade
     ```
 3. Clone the project using [git](https://git-scm.com/downloads):
-    ```commandline
+    ```shell
     git clone https://github.com/anijackich/kinescope-dl.git
     ```
     or directly download and unpack the [source code](https://github.com/anijackich/kinescope-dl/archive/refs/heads/master.zip).
 4. Open console in the project directory
 5. Install and use virtualenv (optional):
-    ```commandline
+    ```shell
     pip install virtualenv
     python3 -m venv venv
     ```
     On Windows, run:
-    ```commandline
+    ```shell
     .\venv\Scripts\activate.bat
     ```
     On Unix or MacOS, run:
-    ```commandline
+    ```shell
     source env/bin/activate
     ```
 6. Install requirements:
-    ```commandline
+    ```shell
     pip install -r requirements.txt
     ```
 7. Install PyInstaller:
-    ```commandline
+    ```shell
     pip install pyinstaller
     ```
 8. Build the project:
-    ```commandline
+    ```shell
     pyinstaller kinescope-dl.spec
     ```
 9. Bundled script should be available in the _dist_ folder
