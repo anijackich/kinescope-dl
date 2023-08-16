@@ -83,8 +83,20 @@ kinescope-dl -r https://example.com --best-quality https://kinescope.io/12345678
     ```shell
     pip install pyinstaller
     ```
-8. Build the project:
+8. Set environment variables with FFmpeg and mp4decrypt binaries paths:
+
+   On Windows, run: 
+   ```shell
+   set FFMPEG_PATH=C:\path\to\ffmpeg.exe
+   set MP4DECRYPT_PATH=mp4decrypt.exe
+   ```
+   On Unix or MacOS, run:
+   ```shell
+   export FFMPEG_PATH=/path/to/ffmpeg
+   export MP4DECRYPT_PATH=/path/to/mp4decrypt
+   ```
+9. Build the project:
     ```shell
     pyinstaller kinescope-dl.spec
     ```
-9. Bundled script should be available in the _dist_ folder
+10. Bundled script should be available in the _dist_ folder
