@@ -48,7 +48,7 @@ kinescope-dl -r https://example.com --best-quality https://kinescope.io/12345678
 
 ## 🔨 Build from sources
 ### Requirements
-[FFmpeg](https://ffmpeg.org/download.html) and [mp4decrypt](https://www.bento4.com/downloads/) binaries should be in the same directory as the project.
+[FFmpeg](https://ffmpeg.org/download.html) and [mp4decrypt](https://www.bento4.com/downloads/) are required.
 
 ### Building
 1. Download and install the latest version of [Python 3](https://www.python.org/downloads/)
