@@ -1,9 +1,10 @@
+import sys
 from io import BytesIO
+from os import PathLike
 from typing import Union
 from pathlib import Path
 from requests import Session
 from subprocess import Popen
-from os import PathLike, remove
 from shutil import copyfileobj, rmtree
 from base64 import b64decode, b64encode
 from requests.exceptions import ChunkedEncodingError
@@ -19,15 +20,20 @@ from kinescope.exceptions import *
 class VideoDownloader:
     def __init__(self, kinescope_video: KinescopeVideo,
                  temp_dir: Union[str, PathLike] = './temp',
-                 ffmpeg_path: Union[str, PathLike] = None,
-                 mp4decrypt_path: Union[str, PathLike] = None):
+                 ffmpeg_path: Union[str, PathLike] = './ffmpeg',
+                 mp4decrypt_path: Union[str, PathLike] = './mp4decrypt'):
         self.kinescope_video: KinescopeVideo = kinescope_video
 
         self.temp_path: Path = Path(temp_dir)
         self.temp_path.mkdir(parents=True, exist_ok=True)
 
-        self.ffmpeg_path = ffmpeg_path
-        self.mp4decrypt_path = mp4decrypt_path
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            meipass_path = Path(sys._MEIPASS).resolve()
+            self.ffmpeg_path = meipass_path / 'ffmpeg'
+            self.mp4decrypt_path = meipass_path / 'mp4decrypt'
+        else:
+            self.ffmpeg_path = ffmpeg_path
+            self.mp4decrypt_path = mp4decrypt_path
 
         self.http = Session()
 
@@ -40,10 +46,10 @@ class VideoDownloader:
                       source_audio_filepath: str | PathLike,
                       target_filepath: str | PathLike):
         try:
-            Popen((f"{self.ffmpeg_path if self.ffmpeg_path else 'ffmpeg'}",
-                   "-i", f"{source_video_filepath}",
-                   "-i", f"{source_audio_filepath}",
-                   "-c", "copy", f"{target_filepath}",
+            Popen((self.ffmpeg_path,
+                   "-i", source_video_filepath,
+                   "-i", source_audio_filepath,
+                   "-c", "copy", target_filepath,
                    "-y", "-loglevel", "error")).communicate()
         except FileNotFoundError:
             raise FFmpegNotFoundError('FFmpeg binary was not found at the specified path')
@@ -52,7 +58,7 @@ class VideoDownloader:
                        target_filepath: str | PathLike,
                        key: str):
         try:
-            Popen((f"{self.mp4decrypt_path if self.mp4decrypt_path else 'mp4decrypt'}",
+            Popen((self.mp4decrypt_path,
                    "--key", f"1:{key}",
                    source_filepath,
                    target_filepath)).communicate()
