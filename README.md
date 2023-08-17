@@ -73,7 +73,7 @@ kinescope-dl -r https://example.com --best-quality https://kinescope.io/12345678
     ```
     On Unix or MacOS, run:
     ```shell
-    source env/bin/activate
+    source venv/bin/activate
     ```
 6. Install requirements:
     ```shell
@@ -88,7 +88,7 @@ kinescope-dl -r https://example.com --best-quality https://kinescope.io/12345678
    On Windows, run: 
    ```shell
    set FFMPEG_PATH=C:\path\to\ffmpeg.exe
-   set MP4DECRYPT_PATH=mp4decrypt.exe
+   set MP4DECRYPT_PATH=C:\path\to\mp4decrypt.exe
    ```
    On Unix or MacOS, run:
    ```shell
