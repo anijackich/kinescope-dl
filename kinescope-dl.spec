@@ -8,7 +8,7 @@ block_cipher = None
 ffmpeg_path = environ.get('FFMPEG_PATH')
 mp4decrypt_path = environ.get('MP4DECRYPT_PATH')
 
-if not (ffmpeg_path or mp4decrypt_path):
+if not (ffmpeg_path and mp4decrypt_path):
     raise Exception('FFMPEG_PATH or MP4DECRYPT_PATH environment variables are not set')
 
 a = Analysis(
