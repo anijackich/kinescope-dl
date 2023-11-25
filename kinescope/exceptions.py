@@ -28,3 +28,7 @@ class FFmpegNotFoundError(FileNotFoundError):
 
 class Mp4DecryptNotFoundError(FileNotFoundError):
     pass
+
+
+class UnsupportedEncryption(Exception):
+    pass

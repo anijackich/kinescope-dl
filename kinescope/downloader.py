@@ -66,24 +66,30 @@ class VideoDownloader:
             raise FFmpegNotFoundError('mp4decrypt binary was not found at the specified path')
 
     def _get_license_key(self) -> str:
-        return b64decode(
-            self.http.post(
-                url=self.kinescope_video.get_clearkey_license_url(),
-                headers={'origin': KINESCOPE_BASE_URL},
-                json={
-                    'kids': [
-                        b64encode(bytes.fromhex(
-                            self.mpd_master
-                            .periods[0]
-                            .adaptation_sets[0]
-                            .content_protections[0]
-                            .cenc_default_kid.replace('-', '')
-                        )).decode().replace('=', '')
-                    ],
-                    'type': 'temporary'
-                }
-            ).json()['keys'][0]['k'] + '=='
-        ).hex() if self.mpd_master.periods[0].adaptation_sets[0].content_protections else None
+        try:
+            return b64decode(
+                self.http.post(
+                    url=self.kinescope_video.get_clearkey_license_url(),
+                    headers={'origin': KINESCOPE_BASE_URL},
+                    json={
+                        'kids': [
+                            b64encode(bytes.fromhex(
+                                self.mpd_master
+                                .periods[0]
+                                .adaptation_sets[0]
+                                .content_protections[0]
+                                .cenc_default_kid.replace('-', '')
+                            )).decode().replace('=', '')
+                        ],
+                        'type': 'temporary'
+                    }
+                ).json()['keys'][0]['k'] + '=='
+            ).hex() if self.mpd_master.periods[0].adaptation_sets[0].content_protections else None
+        except KeyError:
+            raise UnsupportedEncryption(
+                "Unfortunately, only the ClearKey encryption type is currently supported, "
+                "but not the one in this video"
+            )
 
     def _fetch_segment(self,
                        segment_url: str,
