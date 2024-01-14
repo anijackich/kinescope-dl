@@ -1,0 +1,7 @@
+*.git*
+*.dockerfile
+*.spec
+LICENSE
+*.md
+*.txt
+
