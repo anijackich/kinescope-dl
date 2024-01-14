@@ -7,7 +7,7 @@ RUN apt update && apt install -y \
     && rm -rf /var/lib/apt/lists/*
 ADD https://www.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-641.x86_64-unknown-linux.zip /tmp/bento4.zip
 ADD ./requirements.txt /tmp/requirements.txt
-RUN cd /tmp && unzip bento4.zip && mv /tmp/Bento4-SDK-1-6-0-641.x86_64-unknown-linux /opt/bento4
+RUN cd /tmp && unzip bento4.zip && mv /tmp/Bento4-SDK-1-6-0-641.x86_64-unknown-linux /opt/bento4 && rm -rf /tmp/bento4.zip
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv ${VIRTUAL_ENV}
 ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
