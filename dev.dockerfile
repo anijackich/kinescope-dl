@@ -15,5 +15,3 @@ RUN pip install -r /tmp/requirements.txt && rm -f /tmp/requirements.txt
 ENV FFMPEG_PATH=/usr/bin/ffmpeg
 ENV MP4DECRYPT_PATH=/opt/bento4/bin/mp4decrypt
 
-# ENTRYPOINT /usr/local/bin/kinescope-dl
-
