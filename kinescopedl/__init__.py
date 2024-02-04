@@ -1,0 +1,2 @@
+from kinescopedl.kinescope import KinescopeVideo
+from kinescopedl.downloader import VideoDownloader as KinescopeDownloader
