@@ -39,6 +39,8 @@ OUTPUT_FILE — path to the output mp4 file
       -r, --referer URL      Referer url of the site where the video is embedded
       --best-quality         Automatically select the best possible quality
       --temp PATH            Path to directory for temporary files
+      --ffmpeg-path PATH     Path to the ffmpeg executable
+      --mp4decrypt-path PATH Path to the mp4decrypt executable
       --help                 Show this message and exit
 
 ### Example
