@@ -19,7 +19,17 @@ class KinescopeVideo:
         self.http = Session()
 
         if not self.video_id:
+          if "mpd" in self.url:
+            self.video_id = self._get_video_id_from_mpd()
+          else:
             self.video_id = self._get_video_id()
+
+    def _get_video_id_from_mpd(self):
+        print("Video ID FOUND:")
+        videoId = self.url.split("https://kinescope.io/")[1].split("/")[0]
+        print(videoId)
+
+        return videoId
 
     def _get_video_id(self):
         r = self.http.get(
@@ -36,7 +46,10 @@ class KinescopeVideo:
         return r.text.split('id: "')[1].split('"')[0]
 
     def get_mpd_master_playlist_url(self) -> str:
-        return KINESCOPE_MASTER_PLAYLIST_URL.format(video_id=self.video_id)
+        if "mpd" in self.url:
+          return self.url
+        else:
+          return KINESCOPE_MASTER_PLAYLIST_URL.format(video_id=self.video_id)
 
     def get_clearkey_license_url(self) -> str:
         return KINESCOPE_CLEARKEY_LICENSE_URL.format(video_id=self.video_id)
