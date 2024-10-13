@@ -31,11 +31,16 @@ class URLType(click.ParamType):
     '--temp',
     default='./temp', required=False, help='Path to directory for temporary files', type=click.Path()
 )
+@click.option(
+    '--quality', '-q',
+    default=False, required=False, help='Manually select the best possible quality 1) 360p   2) 480p   3) 720p   4) 1080p', type=int
+)
 @click.argument('input_url', type=URLType())
 @click.argument('output_file', type=click.Path())
 @click.option("--ffmpeg-path", default='./ffmpeg', required=False, help='Path to ffmpeg executable', type=click.Path())
 @click.option("--mp4decrypt-path", default='./mp4decrypt', required=False, help='Path to mp4decrypt executable', type=click.Path())
 def main(referer,
+         quality,
          best_quality,
          temp, 
          input_url,
@@ -57,12 +62,15 @@ def main(referer,
 
     downloader: KinescopeDownloader = KinescopeDownloader(kinescope_video, temp, ffmpeg_path=ffmpeg_path, mp4decrypt_path=mp4decrypt_path)
 
-    print('= OPTIONS ============================')
     video_resolutions = downloader.get_resolutions()
-    chosen_resolution = video_resolutions[-1] if best_quality else video_resolutions[int(input(
-        '   '.join([f'{i + 1}) {r[1]}p' for i, r in enumerate(video_resolutions)]) +
-        '\n> Quality: '
-    )) - 1]
+    if (quality):
+        chosen_resolution = video_resolutions[quality - 1]
+    else:
+        print('= OPTIONS ============================')
+        chosen_resolution = video_resolutions[-1] if best_quality else video_resolutions[int(input(
+            '   '.join([f'{i + 1}) {r[1]}p' for i, r in enumerate(video_resolutions)]) +
+            '\n> Quality: '
+        )) - 1]
     print(f'[*] {chosen_resolution[1]}p is selected')
     print('======================================')
 
