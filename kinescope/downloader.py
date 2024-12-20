@@ -119,15 +119,28 @@ class VideoDownloader:
                     self._fetch_segment(segment_url, f)
                     progress_bar.update()
 
+    def _build_segment_url_string(self, representation) -> list[str]:
+        try:
+            base_url = representation.base_urls[0].base_url_value
+        except:
+            base_url = ""
+
+        return [
+            f"{base_url}{segment_url.media}"
+                for segment_url in representation.segment_lists[0].segment_urls
+        ]
+
     def _get_segments_urls(self, resolution: tuple[int, int]) -> dict[str:list[str]]:
         try:
             return {
-                adaptation_set.mime_type: [
-                    segment_url.media for segment_url in adaptation_set.representations[
-                        [(r.width, r.height) for r in adaptation_set.representations].index(resolution)
-                        if adaptation_set.representations[0].height else 0
-                    ].segment_lists[0].segment_urls
-                ] for adaptation_set in self.mpd_master.periods[0].adaptation_sets
+                adaptation_set.mime_type:
+                    self._build_segment_url_string(
+                        adaptation_set.representations[
+                            [(r.width, r.height) for r in adaptation_set.representations].index(resolution)
+                            if adaptation_set.representations[0].height else 0
+                        ]
+                    )
+                for adaptation_set in self.mpd_master.periods[0].adaptation_sets
             }
         except ValueError:
             raise InvalidResolution('Invalid resolution specified')
